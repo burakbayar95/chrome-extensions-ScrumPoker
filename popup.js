@@ -1,62 +1,75 @@
-let intervalId, timeoutId;
+let intervalId;
+const scoresTable = document.getElementById('scoresTable');
+const themeSwitcher = document.getElementById('themeSwitcher');
+const langSwitcher = document.getElementById('langSwitcher');
+const body = document.body;
 
-document.getElementById('startButton').addEventListener('click', function() {
-    this.disabled = true;
-    document.getElementById('timerAndTable').style.display = 'block';
 
-    // Immediately fetch and update scores
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.scripting.executeScript({
-            target: {tabId: tabs[0].id},
-            files: ['content.js']
-        });
-    });
+const texts = {
+    en: {
+        themeButtonText: "Dark/Light",
+        langButtonText: "TR/EN",
+        nameColumn: "Name",
+        scoreColumn: "Score"
+    },
+    tr: {
+        themeButtonText: "Koyu/Açık",
+        langButtonText: "TR/EN",
+        nameColumn: "İsim",
+        scoreColumn: "Puan"
+    }
+};
+let currentLang = localStorage.getItem("pokerLanguage") ?? 'en';
+let currentTheme =  localStorage.getItem("pokerTheme") ?? 'light-theme';
+body.className = currentTheme
 
-    // Start timer for 5 minutes
-    const duration = 5 * 60;
-    let elapsed = 0;
-    updateTimer(duration);
+function updateLanguage(lang) {
+    localStorage.setItem("pokerLanguage", lang);
+    currentLang = lang;
+    document.getElementById('themeSwitcher').innerText = texts[currentLang].themeButtonText;
+    document.getElementById('langSwitcher').innerText = texts[currentLang].langButtonText;
+    document.querySelector('#scoresTable thead tr th:first-child').innerText = texts[currentLang].nameColumn;
+    document.querySelector('#scoresTable thead tr th:last-child').innerText = texts[currentLang].scoreColumn;
+}
 
-    timeoutId = setInterval(function() {
-        elapsed++;
-        updateTimer(duration - elapsed);
-        if (elapsed >= duration) {
-            clearInterval(intervalId);
-            clearInterval(timeoutId);
-            document.getElementById('startButton').disabled = false;
-            alert('Scanning complete!');
-        }
-    }, 1000);
+function toggleTheme() {
+    currentTheme  = currentTheme == 'dark-theme' ? 'light-theme' : 'dark-theme';
+    body.className = currentTheme
+    localStorage.setItem("pokerTheme", currentTheme);
+}
 
-    // Continue fetching every 3 seconds
-    intervalId = setInterval(function() {
-        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+function fetchAndUpdateScores() {
+    if (chrome.tabs && chrome.scripting) {
+        chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
             chrome.scripting.executeScript({
-                target: {tabId: tabs[0].id},
+                target: { tabId: tabs[0].id },
                 files: ['content.js']
             });
         });
-    }, 3000);
-});
-
-function updateTimer(seconds) {
-    const minutes = Math.floor(seconds / 60);
-    const sec = seconds % 60;
-    document.getElementById('timer').textContent = `${pad(minutes)}:${pad(sec)}`;
-}
-
-function pad(number) {
-    return number < 10 ? '0' + number : number;
+    }
 }
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.action === "showScores") {
-        const scoresBody = document.getElementById('scoresBody');
-        scoresBody.innerHTML = '';
+        const tbody = document.querySelector('#scoresTable tbody');
+        tbody.innerHTML = ''; 
         Object.entries(request.data).forEach(([name, score]) => {
-            const row = scoresBody.insertRow();
-            row.insertCell().textContent = name;
-            row.insertCell().textContent = score;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${name}</td><td>${score}</td>`;
+            tbody.appendChild(tr);
         });
     }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    updateLanguage(currentLang);
+    fetchAndUpdateScores();
+    intervalId = setInterval(fetchAndUpdateScores, 3000);
+});
+
+themeSwitcher.addEventListener('click', toggleTheme);
+langSwitcher.addEventListener('click', () => updateLanguage(currentLang === 'en' ? 'tr' : 'en'));
+
+window.addEventListener('blur', function() {
+    clearInterval(intervalId);
 });
