@@ -8,8 +8,7 @@ This Chrome extension is designed to collect and display names and scores from a
 
 - **Data Extraction:** Automatically extracts names and scores from the designated elements on a webpage.
 - **User Interface:** Offers a clean and simple user interface with a button to trigger data fetching and a table to display the extracted data.
-- **Türkçe Karakter Desteği:** Supports Turkish characters, ensuring that names and scores are displayed correctly regardless of the language.
-
+- 
 ## Installation
 
 To install this extension in Chrome, follow these steps:
