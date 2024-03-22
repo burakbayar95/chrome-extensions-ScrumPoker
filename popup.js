@@ -9,12 +9,16 @@ document.getElementById('showScores').addEventListener('click', function() {
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.action == "showScores") {
-        const scoresContainer = document.getElementById('scores');
-        scoresContainer.innerHTML = ''; // Önceki sonuçları temizle
+        const scoresTable = document.getElementById('scoresTable');
+        const scoresBody = document.getElementById('scoresBody');
+        scoresBody.innerHTML = ''; // clear previous results
         Object.entries(request.data).forEach(([name, score]) => {
-            const scoreElement = document.createElement('div');
-            scoreElement.textContent = `${name}: ${score}`;
-            scoresContainer.appendChild(scoreElement);
+            const row = scoresBody.insertRow(-1);
+            const cellName = row.insertCell(0);
+            const cellScore = row.insertCell(1);
+            cellName.textContent = name;
+            cellScore.textContent = score;
         });
+        scoresTable.style.display = 'table'; 
     }
 });
