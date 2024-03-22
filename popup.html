@@ -2,49 +2,17 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>ScrumPoker Hack</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 10px;
-            width: 300px;
-        }
-        #showScores {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            margin: 10px 0;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-align: center;
-        }
-        #showScores:hover {
-            background-color: #45a049;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        tr:nth-child(even) {background-color: #f2f2f2;}
-    </style>
+    <title>Puan Gösterici</title>
+    <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-    <button id="showScores">Show Scores</button>
-    <table id="scoresTable" style="display:none;">
+    <button id="startButton">Başlat</button>
+    <span id="timer">00:00</span>
+    <table id="scoresTable">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Score</th>
+                <th>İsim</th>
+                <th>Puan</th>
             </tr>
         </thead>
         <tbody id="scoresBody">
