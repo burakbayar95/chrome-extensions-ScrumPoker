@@ -3,7 +3,7 @@
   "name": "ScrumPoker Hack",
   "version": "1.0",
   "description": "It allows the scores on the https://www.scrumpoker-online.org/ page to be displayed.",
-  "permissions": ["activeTab", "scripting"],
+  "permissions": ["https://www.scrumpoker-online.org/*", "scripting"],
   "action": {
     "default_popup": "popup.html"
   },
