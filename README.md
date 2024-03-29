@@ -23,8 +23,7 @@ To install this extension in Chrome, follow these steps:
 
 1. Navigate to the webpage from which you want to extract names and scores.
 2. Click on the extension's icon in your browser's toolbar.
-3. A popup will appear with a "Show Scores" button. Click it to extract and display the data.
-4. The names and scores will be presented in a table within the popup.
+3. The names and scores will be presented in a table within the popup.
 
 ## Technologies
 
